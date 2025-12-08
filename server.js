@@ -50,7 +50,7 @@ bot.onText(/\/start/, async (msg) => {
     // Check if user is already registered
     let isRegistered = false;
     try {
-        const result = await pool.query('SELECT * FROM users WHERE telegram_id = $1', [telegramId.toString()]);
+        const result = await pool.query('SELECT * FROM users WHERE telegram_id = $1', [telegramId]);
         isRegistered = result.rows.length > 0;
     } catch (err) {
         console.error('Error checking user:', err);
@@ -92,7 +92,7 @@ bot.on('contact', async (msg) => {
     
     try {
         // Check if already registered
-        const existingUser = await pool.query('SELECT * FROM users WHERE telegram_id = $1', [telegramId.toString()]);
+        const existingUser = await pool.query('SELECT * FROM users WHERE telegram_id = $1', [telegramId]);
         
         if (existingUser.rows.length > 0) {
             bot.sendMessage(chatId, "እርስዎ ቀድሞ ተመዝግበዋል! 'Play' ን ይጫኑ።", {
@@ -110,7 +110,7 @@ bot.on('contact', async (msg) => {
         const username = msg.from.username || `Player_${telegramId}`;
         const userResult = await pool.query(
             'INSERT INTO users (telegram_id, username, phone_number, is_registered) VALUES ($1, $2, $3, $4) RETURNING id',
-            [telegramId.toString(), username, phoneNumber, true]
+            [telegramId, username, phoneNumber, true]
         );
         
         // Create wallet with 10 ETB bonus
@@ -145,7 +145,7 @@ bot.onText(/💰 Check Balance/, async (msg) => {
     try {
         const result = await pool.query(
             'SELECT w.balance FROM users u JOIN wallets w ON u.id = w.user_id WHERE u.telegram_id = $1',
-            [telegramId.toString()]
+            [telegramId]
         );
         
         if (result.rows.length > 0) {

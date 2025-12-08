@@ -161,20 +161,40 @@ function initializeUser() {
                 currentUserId = tg.initDataUnsafe.user.id;
                 console.log('Telegram user ID:', currentUserId);
             } else {
-                currentUserId = 999999;
-                console.log('Using mock user ID:', currentUserId);
+                const urlParams = new URLSearchParams(window.location.search);
+                const tgId = urlParams.get('tg_id');
+                if (tgId) {
+                    currentUserId = parseInt(tgId);
+                    console.log('Telegram ID from URL:', currentUserId);
+                } else {
+                    currentUserId = null;
+                    console.log('No Telegram user ID available');
+                }
             }
         } else {
-            currentUserId = 999999;
-            console.log('Telegram WebApp not available, using mock ID:', currentUserId);
+            const urlParams = new URLSearchParams(window.location.search);
+            const tgId = urlParams.get('tg_id');
+            if (tgId) {
+                currentUserId = parseInt(tgId);
+                console.log('Telegram ID from URL:', currentUserId);
+            } else {
+                currentUserId = null;
+                console.log('Telegram WebApp not available');
+            }
         }
     } catch (error) {
         console.error('Error initializing user:', error);
-        currentUserId = 999999;
+        currentUserId = null;
     }
 }
 
 async function loadWallet() {
+    if (!currentUserId) {
+        console.log('No user ID, skipping wallet load');
+        updateWalletDisplay(0);
+        return;
+    }
+    
     try {
         const response = await fetch(`/api/wallet/${currentUserId}`);
         const data = await response.json();
@@ -449,7 +469,7 @@ function markCalledNumber(number) {
 async function handleCardConfirmation(cardId) {
     if (!currentUserId) {
         console.error('User not initialized');
-        return { success: false, message: 'User not initialized' };
+        return { success: false, message: 'እባክዎ መጀመሪያ ከቴሌግራም ቦት ይመዝገቡ' };
     }
     
     try {

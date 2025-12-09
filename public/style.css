@@ -512,7 +512,8 @@ html, body {
     min-height: 0;
 }
 
-.player-cell {
+.player-cell,
+.player-card-cell {
     background-color: #555;
     color: #fff;
     border-radius: 3px;
@@ -526,17 +527,22 @@ html, body {
     transition: all 0.2s;
 }
 
-.player-cell.marked {
+.player-cell.called,
+.player-card-cell.called {
+    background-color: #f39c12;
+    color: #333;
     font-weight: bold;
 }
 
-.player-cell.marked.col-b { background-color: #e74c3c; }
-.player-cell.marked.col-i { background-color: #f39c12; }
-.player-cell.marked.col-n { background-color: #2ecc71; }
-.player-cell.marked.col-g { background-color: #27ae60; }
-.player-cell.marked.col-o { background-color: #e67e22; }
+.player-cell.marked,
+.player-card-cell.marked {
+    background-color: #27ae60;
+    color: #fff;
+    font-weight: bold;
+}
 
-.player-cell.free-space {
+.player-cell.free-space,
+.player-card-cell.free-space {
     background-color: #2ecc71;
     color: #fff;
     cursor: default;
